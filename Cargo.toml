@@ -1,0 +1,9 @@
+[package]
+name = "storyboard-color-value"
+version = "0.1.0"
+authors = ["Kevin Ballard <kevin.ballard@postmates.com>"]
+
+[dependencies]
+
+alfred = "1.0.1"
+regex = "0.1.71"
