@@ -19,23 +19,20 @@ fn main() {
 }
 
 fn process_argument(arg: &str) -> io::Result<()> {
-    let mut xmlw = try!(alfred::XMLWriter::new(io::stdout()));
-    if let Some(color_str) = extract_color(arg) {
-        let item = alfred::ItemBuilder::new(&color_str[..])
-                                       .subtitle("Storyboard color value")
-                                       .arg(&color_str[..])
-                                       .valid(true)
-                                       .into_item();
-        try!(xmlw.write_item(&item));
+    let item = if let Some(color_str) = extract_color(arg) {
+        alfred::ItemBuilder::new(color_str.clone())
+                                .subtitle("Storyboard color value")
+                                .arg(color_str.clone())
+                                .text_large_type(color_str)
+                                .valid(true)
+                                .into_item()
     } else {
-        let item = alfred::ItemBuilder::new("Invalid input")
-                                       .subtitle("Storyboard color value")
-                                       .valid(false)
-                                       .into_item();
-        try!(xmlw.write_item(&item));
-    }
-    let mut stdout = try!(xmlw.close());
-    stdout.flush()
+        alfred::ItemBuilder::new("Invalid input")
+                                .subtitle("Storyboard color value")
+                                .valid(false)
+                                .into_item()
+    };
+    alfred::json::write_items(io::stdout(), &[item])
 }
 
 fn extract_color(arg: &str) -> Option<String> {
